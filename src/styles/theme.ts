@@ -20,7 +20,10 @@ export const THEME = extendTheme({
       200: '#C4C4CC',
       100: '#E1E1E6'
     },
-    white: '#FFFFFF'
+    white: {
+      700: '#FFFFFF',
+      500: '#FAF3ED'
+    }
   },
   fonts: {
     heading: 'Roboto_700Bold',
