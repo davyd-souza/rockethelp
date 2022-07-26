@@ -1,12 +1,12 @@
-// Dependency
-import { NativeBaseProvider, StatusBar } from 'native-base';
+// DEPENDENCY
 import React from 'react';
 
-// Components 
-import SignIn from './src/screens/SignIn'
+// COMPONENT 
+import { NativeBaseProvider, StatusBar } from 'native-base';
+import Home from './src/screens/Home'
 import Loading from './src/components/Loading'
 
-// Styles
+// STYLE
 import { THEME } from './src/styles/theme'
 import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto'
 
@@ -21,7 +21,7 @@ export default function App() {
         translucent
       />
 
-      { fontsLoaded ? <SignIn /> : <Loading /> }
+      { fontsLoaded ? <Home /> : <Loading /> }
     </NativeBaseProvider>
   );
 }
