@@ -3,12 +3,14 @@ import React from 'react';
 
 // COMPONENT 
 import { NativeBaseProvider, StatusBar } from 'native-base';
-import Home from './src/screens/Home'
 import Loading from './src/components/Loading'
 
 // STYLE
 import { THEME } from './src/styles/theme'
 import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto'
+
+// ROUTE
+import { Routes } from './src/routes/index'
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold })
@@ -21,7 +23,7 @@ export default function App() {
         translucent
       />
 
-      { fontsLoaded ? <Home /> : <Loading /> }
+      { fontsLoaded ? <Routes /> : <Loading /> }
     </NativeBaseProvider>
   );
 }

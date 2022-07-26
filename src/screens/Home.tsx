@@ -1,5 +1,6 @@
 // DEPENDENDCY
 import { useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 // COMPONENT
 import { VStack, HStack, IconButton, useTheme, Text, Heading, FlatList, Center } from 'native-base'
@@ -19,9 +20,21 @@ export function Home() {
             patrimony: '123456',
             when: '18/07/2022 at 10:00',
             status: 'progress'
-        }
+        },
+        {
+            id: '456',
+            patrimony: '789123',
+            when: '26/07/2022 at 08:00',
+            status: 'progress'
+        },
     ])
+
+    const navigation = useNavigation()
     const { colors } = useTheme()
+
+    const handleNewTicket = () => navigation.navigate('new')
+    const handleOpenDetails = (orderId: string) => navigation.navigate('details', { orderId })
+
     return (
         <VStack
             flex={1}
@@ -52,11 +65,11 @@ export function Home() {
                     alignItems="center"
                 >
                     <Heading color="gray.500">
-                        My Tickets
+                        Tickets
                     </Heading>
 
                     <Text color="gray.400">
-                        3
+                        {orders.length}
                     </Text>
                 </HStack>
 
@@ -78,7 +91,7 @@ export function Home() {
                 <FlatList
                     data={orders}
                     keyExtractor={item => item.id}
-                    renderItem={({ item }) => <Ticket data={item}/>}
+                    renderItem={({ item }) => <Ticket data={item} onPress={() => handleOpenDetails(item.id)}/>}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{paddingBottom: 50}}
                     ListEmptyComponent={() => (
@@ -92,7 +105,7 @@ export function Home() {
                     )}
                 />
 
-                <Button title="New Ticket" />
+                <Button title="New Ticket" onPress={handleNewTicket}/>
             </VStack>
 
         </VStack>
