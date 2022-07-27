@@ -1,19 +1,18 @@
-//Dependency
-import { VStack, Heading, Icon, useTheme } from 'native-base'
+// DEPENDENCY
 import { useState } from 'react'
 
-// Style
-import Logo from '../assets/logo_primary.svg'
-import { Envelope, Key } from 'phosphor-react-native'
-
-// Component
+// COMPONENT
+import { VStack, Heading, Icon, useTheme } from 'native-base'
 import { Input } from '../components/Input'
 import { Button } from '../components/Button'
 
-export default function SignIn() {
+// STYLE
+import Logo from '../assets/logo_primary.svg'
+import { Envelope, Key } from 'phosphor-react-native'
+
+export function SignIn() {
     const [ user, setUser ] = useState('')
     const [ password, setPassword ] = useState('')
-    const colors = useTheme()
     
     function handleSignIn() {
         console.log(user, password);
