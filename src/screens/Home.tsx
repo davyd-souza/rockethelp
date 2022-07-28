@@ -1,35 +1,28 @@
 // DEPENDENDCY
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 
 // COMPONENT
 import { VStack, HStack, IconButton, useTheme, Text, Heading, FlatList, Center } from 'native-base'
 import { Filter } from '../components/Filter'
 import { Button } from '../components/Button'
 import { Ticket, TicketProps } from '../components/Ticket'
+import Loading from '../components/Loading'
 
 // STYLE
 import Logo from '../assets/logo_secondary.svg'
 import { SignOut, ChatTeardropText } from 'phosphor-react-native'
 
+// UTIL
+import { dateFormat } from '../utils/firestoreDateFormat'
+
 export function Home() {
-    const [selected, setSelected] = useState<'progress' | 'closed'>('progress')
-    const [orders, setOrders] = useState<TicketProps[]>([
-        {
-            id: '123',
-            patrimony: '123456',
-            when: '18/07/2022 at 10:00',
-            status: 'progress'
-        },
-        {
-            id: '456',
-            patrimony: '789123',
-            when: '26/07/2022 at 08:00',
-            status: 'progress'
-        },
-    ])
+    const [ isLoading, setIsLoading ] = useState(true)
+    const [ selected, setSelected ] = useState<'open' | 'closed'>('open')
+    const [ ticket, setTicket ] = useState<TicketProps[]>([])
 
     const navigation = useNavigation()
     const { colors } = useTheme()
@@ -37,6 +30,29 @@ export function Home() {
     const handleNewTicket = () => navigation.navigate('new')
     const handleOpenDetails = (orderId: string) => navigation.navigate('details', { orderId })
     const handleLogout = () => auth().signOut()
+
+    useEffect(() => {
+        setIsLoading(true)
+
+        const subscriber = firestore()
+            .collection('ticket')
+            .where('status', '==', selected)
+            .onSnapshot(snapshot => {
+                 const data = snapshot.docs.map(doc => {
+                    const { patrimony, description, status, createdAt } = doc.data()
+                    return {
+                        id: doc.id,
+                        patrimony,
+                        description,
+                        status,
+                        when: dateFormat(createdAt)
+                    }
+                 })
+                 setTicket(data)
+                 setIsLoading(false)
+            })
+            return subscriber
+    }, [selected])
 
     return (
         <VStack
@@ -73,16 +89,16 @@ export function Home() {
                     </Heading>
 
                     <Text color="gray.400">
-                        {orders.length}
+                        {ticket.length}
                     </Text>
                 </HStack>
 
                 <HStack space={3} mb={8}>
                     <Filter 
-                        type="progress"
+                        type="open"
                         title="in progress"
-                        onPress={() => setSelected('progress')}
-                        isActive={selected === 'progress'}
+                        onPress={() => setSelected('open')}
+                        isActive={selected === 'open'}
                         />
                     <Filter 
                         type="closed"
@@ -91,24 +107,25 @@ export function Home() {
                         isActive={selected === 'closed'}
                     />
                 </HStack>
-                
-                <FlatList
-                    data={orders}
-                    keyExtractor={item => item.id}
-                    renderItem={({ item }) => <Ticket data={item} onPress={() => handleOpenDetails(item.id)}/>}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{paddingBottom: 50}}
-                    ListEmptyComponent={() => (
-                        <Center>
-                            <ChatTeardropText color={colors.gray[400]} size={40}/>
-                            <Text color="gray.400" fontSize="xl" mt={6} textAlign="center">
-                                There are no tickets {'\n'}
-                                {selected === 'progress' ? 'in progress' : 'closed'}
-                            </Text>
-                        </Center>
-                    )}
-                />
-
+                {
+                    isLoading ? <Loading /> :
+                    <FlatList
+                        data={ticket}
+                        keyExtractor={item => item.id}
+                        renderItem={({ item }) => <Ticket data={item} onPress={() => handleOpenDetails(item.id)}/>}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{paddingBottom: 50}}
+                        ListEmptyComponent={() => (
+                            <Center>
+                                <ChatTeardropText color={colors.gray[400]} size={40}/>
+                                <Text color="gray.400" fontSize="xl" mt={6} textAlign="center">
+                                    There are no tickets {'\n'}
+                                    {selected === 'open' ? 'in progress' : 'closed'}
+                                </Text>
+                            </Center>
+                        )}
+                    />
+                }
                 <Button title="New Ticket" onPress={handleNewTicket}/>
             </VStack>
 
