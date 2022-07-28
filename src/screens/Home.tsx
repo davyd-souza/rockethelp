@@ -28,7 +28,7 @@ export function Home() {
     const { colors } = useTheme()
 
     const handleNewTicket = () => navigation.navigate('new')
-    const handleOpenDetails = (orderId: string) => navigation.navigate('details', { orderId })
+    const handleOpenDetails = (ticketId: string) => navigation.navigate('details', { ticketId })
     const handleLogout = () => auth().signOut()
 
     useEffect(() => {

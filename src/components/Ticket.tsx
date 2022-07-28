@@ -8,7 +8,7 @@ export type TicketProps = {
     id: string;
     patrimony: string;
     when: string;
-    status: 'progress' | 'closed'
+    status: 'open' | 'closed'
 }
 
 type Props = IPressableProps & {
