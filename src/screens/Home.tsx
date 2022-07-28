@@ -1,6 +1,8 @@
 // DEPENDENDCY
 import { useState } from 'react'
+import { Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import auth from '@react-native-firebase/auth'
 
 // COMPONENT
 import { VStack, HStack, IconButton, useTheme, Text, Heading, FlatList, Center } from 'native-base'
@@ -34,6 +36,7 @@ export function Home() {
 
     const handleNewTicket = () => navigation.navigate('new')
     const handleOpenDetails = (orderId: string) => navigation.navigate('details', { orderId })
+    const handleLogout = () => auth().signOut()
 
     return (
         <VStack
@@ -53,6 +56,7 @@ export function Home() {
                 <Logo />
                 <IconButton
                     icon={ <SignOut size={26} color={colors.gray[500]} />}
+                    onPress={handleLogout}
                 />
             </HStack>
 
